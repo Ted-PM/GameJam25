@@ -23,5 +23,9 @@ public class Player : MonoBehaviour
         {
             GameManager.Instance.Win();
         }
+        else if (collision.tag == "Obstacle")
+        {
+            GameManager.Instance.Lose();
+        }
     }
 }

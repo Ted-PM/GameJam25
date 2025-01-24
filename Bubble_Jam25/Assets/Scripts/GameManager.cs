@@ -26,12 +26,17 @@ public class GameManager : MonoBehaviour
     }
     public void Win()
     {
-        //sceneCount++;
+        sceneCount = 0;
         if (sceneCount >= SceneManager.sceneCountInBuildSettings)
         {
             sceneCount = 0;
         }
         PlayerPrefs.SetInt("levelCount", sceneCount);
+        SceneManager.LoadScene(sceneCount);
+    }
+
+    public void Lose()
+    {
         SceneManager.LoadScene(sceneCount);
     }
 

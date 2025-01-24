@@ -9,8 +9,19 @@ public class GameManager : MonoBehaviour
     private int sceneCount = 0;
     private void Awake()
     {
-        Instance = this;
-
+       
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+            //sceneCount = 0;
+            //PlayerPrefs.SetInt("levelCount", 0);
+        }
+        else
+        {
+            //sceneCount = PlayerPrefs.GetInt("levelCount");
+            Destroy(Instance);
+        }
     }
     void Start()
     {
@@ -26,7 +37,9 @@ public class GameManager : MonoBehaviour
     }
     public void Win()
     {
-        sceneCount = 0;
+        Debug.Log("WIN");
+        //sceneCount = 0;
+        sceneCount++;
         if (sceneCount >= SceneManager.sceneCountInBuildSettings)
         {
             sceneCount = 0;
@@ -37,14 +50,8 @@ public class GameManager : MonoBehaviour
 
     public void Lose()
     {
+        Debug.Log("LOSE");
+
         SceneManager.LoadScene(sceneCount);
-    }
-
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

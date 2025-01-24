@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class BubblePointer : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class BubblePointer : MonoBehaviour
     public bool canBlow { private set; get; }
     public bool isBlowing { private set; get; }
 
-    private Vector3 startMousePos;
+    //private Vector3 startMousePos;
     void Start()
     {
         _bubbleRadius = 0f;
@@ -49,7 +50,7 @@ public class BubblePointer : MonoBehaviour
 
         if (canBlow && Input.GetKeyDown(KeyCode.Space) && lungCapacity >= 0.1f)
         {
-            startMousePos = Input.mousePosition;
+            //startMousePos = Input.mousePosition;
             isBlowing = true;
             canBlow = false;
             Debug.Log("start blowing");
@@ -78,13 +79,13 @@ public class BubblePointer : MonoBehaviour
     private IEnumerator PlayerStatic()
     {
         Vector3 startPos = _player.transform.position;
-        Debug.Log("startPos = " + startPos);
+        //Debug.Log("startPos = " + startPos);
         yield return new WaitForFixedUpdate();
 
         //float movesSpeed = Mathf.Ceil(Vector3.Distance(_player.transform.position, startPos));
         Vector3 endPos = _player.transform.position;
 
-        Debug.Log("endPos = " + endPos);
+        //Debug.Log("endPos = " + endPos);
         //if (movesSpeed == 0)
         if (endPos.x == startPos.x && endPos.y == startPos.y)
         {
@@ -100,7 +101,7 @@ public class BubblePointer : MonoBehaviour
         //}
         if (!canBlow && !isBlowing && lungCapacity >= 0.1f)
         {
-            Debug.Log("check player static");
+            //Debug.Log("check player static");
             StartCoroutine(PlayerStatic());
         }
     }
@@ -138,7 +139,9 @@ public class BubblePointer : MonoBehaviour
     private void Pop()
     {
         Vector3 mousePos = Input.mousePosition;
-        Vector3 dir = (mousePos - pivot.position).normalized;
+
+        Vector3 playerPos = Camera.main.WorldToScreenPoint(pivot.position);
+        Vector3 dir = (mousePos - playerPos).normalized;
         _player.ThrowPlayer(_bubbleRadius, dir);
         _spriteRenderer.enabled = false;
         _innerBubbleRenderer.enabled = false;
@@ -148,7 +151,9 @@ public class BubblePointer : MonoBehaviour
     private void PointBubbleAtMouse()
     {
         Vector3 mousePos = Input.mousePosition;
-        Vector3 dir = (mousePos - pivot.position).normalized;
+        
+        Vector3 playerPos = Camera.main.WorldToScreenPoint(pivot.position);
+        Vector3 dir = (mousePos - playerPos).normalized;
         _transform.localPosition = dir * 1.5f * _bubbleRadius;
     }
 }

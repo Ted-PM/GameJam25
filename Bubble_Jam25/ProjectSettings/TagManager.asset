@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - WinDoor
   layers:
   - Default
   - TransparentFX
@@ -40,4 +41,19 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: BackGround
+    uniqueID: 2023634759
+    locked: 0
+  - name: Enviorment
+    uniqueID: 1295878927
+    locked: 0
+  - name: Player
+    uniqueID: 1526262447
+    locked: 0
+  - name: Bubble
+    uniqueID: 687884865
+    locked: 0
+  - name: Doors
+    uniqueID: 2752458385
     locked: 0

@@ -13,20 +13,20 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     public float forceScale;
 
-    //public GameObject blow;
-    //public GameObject normal;
+    public GameObject blow;
+    public GameObject normal;
     public TextMeshProUGUI face;
-    private Transform _transform;
+    //private Transform _transform;
 
     //public GameObject Sprite;
     void Start()
     {
-        _transform = GetComponent<Transform>();
+        //_transform = GetComponent<Transform>();
         //blow.transform.localScale = new Vector3(2, 2, 1);
         //normal.transform.localScale = new Vector3(2, 2, 1);
-        //blow.SetActive(false);
-        //normal.SetActive(true);
-        face.text = "0o";
+        blow.SetActive(false);
+        normal.SetActive(true);
+        //face.text = "0o";
         rb = GetComponent<Rigidbody2D>();
 
         if (gotRefill == null )
@@ -75,21 +75,22 @@ public class Player : MonoBehaviour
     {
         //blow.transform.position = this.transform.position + new Vector3 (0, 1, 0);
         //normal.transform.position = this.transform.position + new Vector3(0, 1, 0);
+        //face.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, 0);
         //face.transform.localPosition = new Vector3(_transform.localPosition.x, _transform.localPosition.y + 1, face.transform.localPosition.z);
         //face.rectTransform.transform.position = _transform.position;
-        face.rectTransform.transform.position = new Vector3(_transform.position.x, _transform.position.y + 1, 0);//_transform.position;
+        //face.rectTransform.transform.localPosition = new Vector3(_transform.position.x - 14.75f, _transform.position.y - 8.5f + 1, 0);//_transform.position;
     }
 
     public void BlowFace()
     {
-        face.text = "><";
-        //blow.SetActive(true);
-        //normal.SetActive(false);
+        //face.text = "><";
+        blow.SetActive(true);
+        normal.SetActive(false);
     }
     public void NormalFace()
     {
-        face.text = "0o";
-        //blow.SetActive(false);
-        //normal.SetActive(true);
+        //face.text = "0o";
+        blow.SetActive(false);
+        normal.SetActive(true);
     }
 }

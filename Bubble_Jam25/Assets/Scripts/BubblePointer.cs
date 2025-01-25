@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
+using UnityEngine.Events;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class BubblePointer : MonoBehaviour
 {
+
     [SerializeField]
     private Player _player;
     [SerializeField]
@@ -26,12 +29,15 @@ public class BubblePointer : MonoBehaviour
     public Transform pivot;
 
     public float _bubbleRadius {  get; private set; }
+    private bool _playerStatic;
     public bool canBlow { private set; get; }
     public bool isBlowing { private set; get; }
 
     //private Vector3 startMousePos;
     void Start()
     {
+
+        _playerStatic = false;
         _bubbleRadius = 0f;
         _playerPivot = GetComponentInParent<Transform>();
         lungCapacity = maxLungCapacity;
@@ -42,35 +48,44 @@ public class BubblePointer : MonoBehaviour
         canBlow = true;
         _spriteRenderer.enabled = false;
         _innerBubbleRenderer.enabled = false;
+
+        _player.GetComponent<Player>().Refill += RefillLungs;
+        //_player.gotRefill.AddListener(bubbleAction);
+        //_player.GetComponent<UnityEvent>().AddListener(bubbleAction);
+        //_player.ev
+        //bubbleAction += RefillLungs;
     }
 
     void Update()
     {
-        //if (canBlow && Input.GetMouseButtonDown(0) && lungCapacity >= 0.1f)
 
         if (canBlow && Input.GetKeyDown(KeyCode.Space) && lungCapacity >= 0.1f)
         {
-            //startMousePos = Input.mousePosition;
             isBlowing = true;
             canBlow = false;
             Debug.Log("start blowing");
-            _player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+            //_player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
             StartCoroutine(BlowBubble());
         }
-        //if ((isBlowing && Input.GetMouseButtonUp(0)) || lungCapacity <= 0.1f || _bubbleRadius >=2.5f)
         if ((isBlowing && Input.GetKeyUp(KeyCode.Space)) || lungCapacity <= 0.1f || _bubbleRadius >=2.5f)
         {
             isBlowing = false;
-            //canBlow = true;
+            canBlow = true;
             Debug.Log("pop");
-            _player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
-            _player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
+            //_player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+            //_player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
             Pop();
             _bubbleRadius = 0f;
         }
 
         
-        if (lungCapacity < 0.1)
+        if (lungCapacity < 0.1 && !_playerStatic)
+        {
+            //_playerStatic
+            StartCoroutine(PlayerStatic());
+            //GameManager.Instance.Lose();
+        }
+        if (lungCapacity < 0.1 && _playerStatic)
         {
             GameManager.Instance.Lose();
         }
@@ -89,7 +104,8 @@ public class BubblePointer : MonoBehaviour
         //if (movesSpeed == 0)
         if (endPos.x == startPos.x && endPos.y == startPos.y)
         {
-            canBlow = true;
+            //canBlow = true;
+            _playerStatic = true;
         }
     }
 
@@ -99,15 +115,16 @@ public class BubblePointer : MonoBehaviour
         //{
             PointBubbleAtMouse();
         //}
-        if (!canBlow && !isBlowing && lungCapacity >= 0.1f)
-        {
-            //Debug.Log("check player static");
-            StartCoroutine(PlayerStatic());
-        }
+        //if (!canBlow && !isBlowing && lungCapacity >= 0.1f)
+        //{
+        //    //Debug.Log("check player static");
+        //    StartCoroutine(PlayerStatic());
+        //}
     }
 
     private IEnumerator BlowBubble()
     {
+        _player.BlowFace();
         _spriteRenderer.enabled = true;
         _innerBubbleRenderer.enabled = true;
         float maxTime = lungCapacity * lungToTimeMultiplier;
@@ -143,6 +160,7 @@ public class BubblePointer : MonoBehaviour
         Vector3 playerPos = Camera.main.WorldToScreenPoint(pivot.position);
         Vector3 dir = (mousePos - playerPos).normalized;
         _player.ThrowPlayer(_bubbleRadius, dir);
+        _player.NormalFace();
         _spriteRenderer.enabled = false;
         _innerBubbleRenderer.enabled = false;
 
@@ -155,5 +173,11 @@ public class BubblePointer : MonoBehaviour
         Vector3 playerPos = Camera.main.WorldToScreenPoint(pivot.position);
         Vector3 dir = (mousePos - playerPos).normalized;
         _transform.localPosition = dir * 1.5f * _bubbleRadius;
+    }
+
+    public void RefillLungs()
+    {
+        lungCapacity = maxLungCapacity;
+        _lungFill.localScale = new Vector3(1, 1, 0);
     }
 }

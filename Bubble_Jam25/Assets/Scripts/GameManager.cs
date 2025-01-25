@@ -23,6 +23,14 @@ public class GameManager : MonoBehaviour
             Destroy(Instance);
         }
     }
+
+    private void FixedUpdate()
+    {
+        if (Input.GetKey(KeyCode.R))
+        {
+            Lose();
+        }
+    }
     void Start()
     {
         if (!PlayerPrefs.HasKey("levelCount"))
@@ -32,8 +40,12 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            sceneCount = PlayerPrefs.GetInt("levelCount");
+            sceneCount = SceneManager.GetActiveScene().buildIndex;
+            PlayerPrefs.SetInt("levelCount", sceneCount);
+            Debug.Log("sceneCount = " + sceneCount);
+            //sceneCount = PlayerPrefs.GetInt("levelCount");
         }
+        
     }
     public void Win()
     {

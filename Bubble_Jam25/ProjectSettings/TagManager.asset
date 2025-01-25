@@ -6,6 +6,7 @@ TagManager:
   tags:
   - WinDoor
   - Obstacle
+  - Coin
   layers:
   - Default
   - TransparentFX
@@ -49,6 +50,9 @@ TagManager:
   - name: Obstacle
     uniqueID: 1202176131
     locked: 0
+  - name: Doors
+    uniqueID: 2752458385
+    locked: 0
   - name: Enviorment
     uniqueID: 1295878927
     locked: 0
@@ -57,7 +61,4 @@ TagManager:
     locked: 0
   - name: Bubble
     uniqueID: 687884865
-    locked: 0
-  - name: Doors
-    uniqueID: 2752458385
     locked: 0

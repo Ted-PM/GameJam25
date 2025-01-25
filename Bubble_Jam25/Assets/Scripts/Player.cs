@@ -1,14 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
+    public UnityEvent gotRefill;
+    public event UnityAction Refill;
     private Rigidbody2D rb;
     public float forceScale;
+
+    public GameObject blow;
+    public GameObject normal;
+
+    //public GameObject Sprite;
     void Start()
     {
+        blow.SetActive(false);
+        normal.SetActive(true);
         rb = GetComponent<Rigidbody2D>();
+
+        if (gotRefill == null )
+        {
+            gotRefill = new UnityEvent();
+            gotRefill.AddListener(Refill);
+        }
+
     }
 
     public void ThrowPlayer(float bubbleRad, Vector3 dir)
@@ -27,5 +45,38 @@ public class Player : MonoBehaviour
         {
             GameManager.Instance.Lose();
         }
+        else if (collision.tag == "Coin" && gotRefill != null)
+        {
+            gotRefill.Invoke();
+        }
+
+       
+    }
+
+    //private void FixedUpdate()
+    //{
+    //    Vector3 mousePos = Input.mousePosition;
+    //    Sprite.transform.LookAt(mousePos);
+    //}
+    private void OnDisable()
+    {
+        //gotRefill.RemoveListener(Refill);
+    }
+
+    private void FixedUpdate()
+    {
+        blow.transform.position = this.transform.position + new Vector3 (0, 1, 0);
+        normal.transform.position = this.transform.position + new Vector3(0, 1, 0);
+    }
+
+    public void BlowFace()
+    {
+        blow.SetActive(true);
+        normal.SetActive(false);
+    }
+    public void NormalFace()
+    {
+        blow.SetActive(false);
+        normal.SetActive(true);
     }
 }

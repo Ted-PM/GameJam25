@@ -44,7 +44,7 @@ public class Instructions : MonoBehaviour
     {
         _instructions.text = "Move your MOUSE to AIM the BUBBLE.";
         yield return new WaitForSeconds(4);
-        _instructions.text = "A Larger BUBBLE will send you FURTHER.";
+        _instructions.text = "A LARGER BUBBLE will send you FURTHER.";
         yield return new WaitForSeconds(4);
         _instructions.text = "Make sure not to RUN OUT of AIR...";
         _lungHighlight.SetActive(true);

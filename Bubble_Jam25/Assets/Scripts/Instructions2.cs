@@ -26,7 +26,7 @@ public class Instructions2 : MonoBehaviour
         _arrow.SetActive(true);
         yield return new WaitForSeconds(3);
         _arrow.SetActive(false);
-        _text.GetComponent<TextMeshProUGUI>().text = "Pickup the inhaler to REFILL your LUNGS.";
+        _text.GetComponent<TextMeshProUGUI>().text = "Pick up the INHALER to REFILL your LUNGS.";
         _collectable.SetActive(true);
         yield return new WaitForSeconds(4);
         _collectable.SetActive(false);

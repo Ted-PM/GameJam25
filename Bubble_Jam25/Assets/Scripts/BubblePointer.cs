@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 using UnityEngine.Events;
-using static UnityEditor.Experimental.GraphView.GraphView;
+using System.Threading;
+using Unity.VisualScripting;
+//using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class BubblePointer : MonoBehaviour
 {
+    [SerializeField]
+    private SpriteRenderer _head;
 
     [SerializeField]
     private Player _player;
@@ -33,6 +37,10 @@ public class BubblePointer : MonoBehaviour
     public bool canBlow { private set; get; }
     public bool isBlowing { private set; get; }
 
+    [SerializeField]
+    private AudioSource _blowSound;
+    [SerializeField]
+    private AudioSource _pop;
     //private Vector3 startMousePos;
     void Start()
     {
@@ -70,8 +78,10 @@ public class BubblePointer : MonoBehaviour
         if ((isBlowing && Input.GetKeyUp(KeyCode.Space)) || lungCapacity <= 0.1f || _bubbleRadius >=2.5f)
         {
             isBlowing = false;
-            canBlow = true;
+            //canBlow = true;
+            StartCoroutine(WaitBeforeBlow());
             Debug.Log("pop");
+            _blowSound.Stop();
             //_player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
             //_player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
             Pop();
@@ -89,6 +99,12 @@ public class BubblePointer : MonoBehaviour
         {
             GameManager.Instance.Lose();
         }
+    }
+
+    private IEnumerator WaitBeforeBlow()
+    {
+        yield return new WaitForSeconds(0.1f);
+        canBlow = true;
     }
 
     private IEnumerator PlayerStatic()
@@ -137,7 +153,7 @@ public class BubblePointer : MonoBehaviour
         Vector3 endScale = new Vector3(lungCapacity, lungCapacity, 1);
 
         _spriteRenderer.color = _startColor;
-
+        _blowSound.Play();
         while (t<1 && isBlowing)
         {
             deltaTime = Time.deltaTime;
@@ -147,6 +163,8 @@ public class BubblePointer : MonoBehaviour
             _lungFill.localScale = new Vector3(1, (lungCapacity/maxLungCapacity), 0);
             _transform.localScale = Vector3.Lerp(startScale, endScale, t);
             _transform.localScale = _transform.localScale + (t*Random.insideUnitSphere);
+            _head.color = new Color(1-2*t, 1-2*t, 1);
+            _blowSound.volume = t;
             _spriteRenderer.color = new Color(_startColor.r, _startColor.g, _startColor.b, (1 - t));
             _bubbleRadius = _transform.localScale.x / 2;
             yield return null;
@@ -155,15 +173,21 @@ public class BubblePointer : MonoBehaviour
 
     private void Pop()
     {
+        _pop.volume = _bubbleRadius / 5;
+        _pop.Play();
         Vector3 mousePos = Input.mousePosition;
 
         Vector3 playerPos = Camera.main.WorldToScreenPoint(pivot.position);
         Vector3 dir = (mousePos - playerPos).normalized;
         _player.ThrowPlayer(_bubbleRadius, dir);
         _player.NormalFace();
+        _head.color = Color.white;
         _spriteRenderer.enabled = false;
         _innerBubbleRenderer.enabled = false;
-
+        _bubbleRadius = 0f;
+        _transform.localScale = new Vector3(1, 1, 1);
+        _transform.localPosition = new Vector3(0, 1, 0);
+        
     }
 
     private void PointBubbleAtMouse()
@@ -172,7 +196,7 @@ public class BubblePointer : MonoBehaviour
         
         Vector3 playerPos = Camera.main.WorldToScreenPoint(pivot.position);
         Vector3 dir = (mousePos - playerPos).normalized;
-        _transform.localPosition = dir * 1.5f * _bubbleRadius;
+        _transform.localPosition = dir *  _bubbleRadius;
     }
 
     public void RefillLungs()

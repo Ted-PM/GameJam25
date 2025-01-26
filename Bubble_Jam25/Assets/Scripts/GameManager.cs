@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
         {
             timer.enabled = true;
         }
-        else if (sceneCount == 0 || sceneCount == 6)
+        else if (sceneCount == 0 || sceneCount == SceneManager.sceneCountInBuildSettings - 1)
         {
             timer.enabled = false;
         }

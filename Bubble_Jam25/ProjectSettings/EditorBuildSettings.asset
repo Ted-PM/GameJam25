@@ -24,9 +24,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Lvl5.unity
     guid: eb473d610006a2146af4a44d8c12e005
   - enabled: 1
+    path: Assets/Scenes/Lvl6.unity
+    guid: 1cdd6326e12b22545a1075f4c23ce1e6
+  - enabled: 1
+    path: Assets/Scenes/Lvl7.unity
+    guid: 75e77e9d9ce134947b3d31cb8f96c78c
+  - enabled: 1
+    path: Assets/Scenes/Lvl8.unity
+    guid: 63f30ef46e78e664995f955a4114741c
+  - enabled: 1
     path: Assets/Scenes/WinPage.unity
     guid: 99bd530fb7eb0cc49bcdddee1ef83464
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}

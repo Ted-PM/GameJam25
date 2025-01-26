@@ -4,6 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using static Unity.Collections.AllocatorManager;
 
 public class Player : MonoBehaviour
 {
@@ -59,6 +60,33 @@ public class Player : MonoBehaviour
         }
 
        
+    }
+
+    private bool onMover = false;
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Mover")
+        {
+            onMover = true;
+            StartCoroutine(MovePlayerWithBlock(collision.gameObject));
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Mover")
+        {
+            onMover = false;
+        }
+    }
+
+    private IEnumerator MovePlayerWithBlock(GameObject block)
+    {
+        while (onMover)
+        {
+            this.transform.position = new Vector3(block.transform.position.x, this.transform.position.y, this.transform.position.z);
+            yield return null;
+        }
     }
 
     //private void FixedUpdate()

@@ -90,4 +90,15 @@ public class GameManager : MonoBehaviour
 
         SceneManager.LoadScene(sceneCount);
     }
+
+    public bool IsOnePhone()
+    {
+        bool result = true;
+
+        if ((!Application.isMobilePlatform && Application.platform == RuntimePlatform.WebGLPlayer) || Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            result = false;
+        }
+        return result;
+    }
 }

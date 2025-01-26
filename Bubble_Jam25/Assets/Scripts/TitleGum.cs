@@ -14,12 +14,16 @@ public class TitleGum : MonoBehaviour
     bool started = false;
 
     public TextMeshProUGUI title;
+    public TextMeshProUGUI PressPlay;
     // Start is called before the first frame update
     void Start()
     {
         gum.SetActive(false);
         title.enabled = false;
-
+        if (GameManager.Instance.IsOnePhone())
+        {
+            PressPlay.text = "[TAP to BEGIN]";
+        }
     }
 
     private IEnumerator BlowBubble()
@@ -62,7 +66,7 @@ public class TitleGum : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !started)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.touchCount > 0) && !started)
         {
             started = true;
             StartCoroutine(BlowBubble());

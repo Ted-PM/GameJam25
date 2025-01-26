@@ -68,7 +68,17 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Mover")
         {
             onMover = true;
-            StartCoroutine(MovePlayerWithBlock(collision.gameObject));
+            if (collision.gameObject.GetComponent<MovingBlock>().isHorizontal)
+            {
+                float offset = this.transform.position.x - collision.transform.position.x;
+                StartCoroutine(MovePlayerWithBlock(collision.gameObject, offset));
+            }
+            else
+            {
+                float offset = this.transform.position.y - collision.transform.position.y;
+                StartCoroutine(MoveVertPlayer(collision.gameObject, offset));
+            }
+            
         }
     }
 
@@ -77,14 +87,26 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Mover")
         {
             onMover = false;
+            rb.mass = 1;
         }
     }
 
-    private IEnumerator MovePlayerWithBlock(GameObject block)
+    //private IEnumerator MovePlayerWithBlock(GameObject block)
+    private IEnumerator MovePlayerWithBlock(GameObject block, float offset)
     {
         while (onMover)
         {
-            this.transform.position = new Vector3(block.transform.position.x, this.transform.position.y, this.transform.position.z);
+            this.transform.position = new Vector3(block.transform.position.x + offset, this.transform.position.y, this.transform.position.z);
+            yield return null;
+        }
+    }
+
+    private IEnumerator MoveVertPlayer(GameObject block, float offset)
+    {
+        while (onMover)
+        {
+            rb.mass = 100f;
+            //this.transform.position = new Vector3(this.transform.position.x, block.transform.position.y + offset, this.transform.position.z);
             yield return null;
         }
     }

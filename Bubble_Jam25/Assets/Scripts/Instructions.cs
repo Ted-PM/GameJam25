@@ -26,7 +26,7 @@ public class Instructions : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !_hasStarted)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.touchCount > 0 ) && !_hasStarted)
         {
             _hasStarted = true;
             StartCoroutine(DisableText());
@@ -42,7 +42,14 @@ public class Instructions : MonoBehaviour
 
     private IEnumerator DisableText()
     {
-        _instructions.text = "Move your MOUSE to AIM the BUBBLE.";
+        if (!GameManager.Instance.IsOnePhone())
+        {
+            _instructions.text = "Move your MOUSE to AIM the BUBBLE.";
+        }
+        else
+        {
+            _instructions.text = "Move your FINGER to AIM the BUBBLE.";
+        }
         yield return new WaitForSeconds(4);
         _instructions.text = "A LARGER BUBBLE will send you FURTHER.";
         yield return new WaitForSeconds(4);

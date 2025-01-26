@@ -41,6 +41,7 @@ public class BubblePointer : MonoBehaviour
     private AudioSource _blowSound;
     [SerializeField]
     private AudioSource _pop;
+    private Touch _touch;
     //private Vector3 startMousePos;
     void Start()
     {
@@ -64,20 +65,27 @@ public class BubblePointer : MonoBehaviour
         //bubbleAction += RefillLungs;
     }
 
+    private bool touched = false;
     void Update()
     {
-
-        if (canBlow && Input.GetKeyDown(KeyCode.Space) && lungCapacity >= 0.1f)
+        
+        if (canBlow && (Input.GetKeyDown(KeyCode.Space) || Input.touchCount > 0) && lungCapacity >= 0.1f)
         {
             isBlowing = true;
             canBlow = false;
+            if (IsOnPhone())
+            {
+                touched = true;
+            }
+
             Debug.Log("start blowing");
             //_player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
             StartCoroutine(BlowBubble());
         }
-        if ((isBlowing && Input.GetKeyUp(KeyCode.Space)) || lungCapacity <= 0.1f || _bubbleRadius >=2.5f)
+        if ((isBlowing && (Input.GetKeyUp(KeyCode.Space) || (touched && IsOnPhone() && Input.touchCount == 0))) || lungCapacity <= 0.1f || _bubbleRadius >=2.5f)
         {
             isBlowing = false;
+            touched = false;
             //canBlow = true;
             StartCoroutine(WaitBeforeBlow());
             Debug.Log("pop");
@@ -176,7 +184,7 @@ public class BubblePointer : MonoBehaviour
         _pop.volume = _bubbleRadius / 5;
         _pop.Play();
         Vector3 mousePos = Input.mousePosition;
-
+        //_player.GetComponent<Rigidbody2D>().mass = 1f;
         Vector3 playerPos = Camera.main.WorldToScreenPoint(pivot.position);
         Vector3 dir = (mousePos - playerPos).normalized;
         _player.ThrowPlayer(_bubbleRadius, dir);
@@ -192,16 +200,47 @@ public class BubblePointer : MonoBehaviour
 
     private void PointBubbleAtMouse()
     {
-        Vector3 mousePos = Input.mousePosition;
-        
-        Vector3 playerPos = Camera.main.WorldToScreenPoint(pivot.position);
-        Vector3 dir = (mousePos - playerPos).normalized;
-        _transform.localPosition = dir *  _bubbleRadius;
+        if (!IsOnPhone())
+        {
+            Vector3 mousePos = Input.mousePosition;
+
+            Vector3 playerPos = Camera.main.WorldToScreenPoint(pivot.position);
+            Vector3 dir = (mousePos - playerPos).normalized;
+            if (!float.IsNaN(dir.x))
+            {
+                _transform.localPosition = dir * _bubbleRadius;
+            }
+        }
+        else if (Input.touchCount > 0) 
+        {
+            //Touch touch = Input.GetTouch(0);
+            Vector3 touchPos = Input.GetTouch(0).position;
+
+            Vector3 playerPos = Camera.main.WorldToScreenPoint(pivot.position);
+            Vector3 dir = (touchPos - playerPos).normalized;
+            _transform.localPosition = dir * _bubbleRadius;
+        }
+
     }
 
     public void RefillLungs()
     {
         lungCapacity = maxLungCapacity;
         _lungFill.localScale = new Vector3(1, 1, 0);
+    }
+
+    private bool IsOnPhone()
+    {
+        bool result = true;
+
+        //if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsEditor)
+        //{
+        //    result = false;
+        //}
+        if ((!Application.isMobilePlatform && Application.platform == RuntimePlatform.WebGLPlayer) || Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            result = false;
+        }
+        return result;
     }
 }

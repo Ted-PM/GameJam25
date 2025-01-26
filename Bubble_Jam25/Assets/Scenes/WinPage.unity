@@ -447,6 +447,7 @@ MonoBehaviour:
   blow: {fileID: 355593235}
   _pop: {fileID: 355593234}
   title: {fileID: 0}
+  PressPlay: {fileID: 0}
 --- !u!4 &355593237
 Transform:
   m_ObjectHideFlags: 0
@@ -797,6 +798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1b037904ccbce44c84bce66f4c95741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PressPlay: {fileID: 499723959}
 --- !u!4 &830939688
 Transform:
   m_ObjectHideFlags: 0
